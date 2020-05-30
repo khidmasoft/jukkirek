@@ -1,0 +1,16 @@
+version: '2'
+services:
+  jukkirek-mongodb:
+    image: mongo:4.2.6
+    ports:
+      - '27017:27017'
+    command: mongos --configdb csvr/jukkirek-mongodb-config --bind_ip 0.0.0.0
+  jukkirek-mongodb-node:
+    build:
+      context: .
+      dockerfile: mongodb/MongoDB.Dockerfile
+    command: mongod --shardsvr --replSet rs1
+  jukkirek-mongodb-config:
+    image: mongo:4.2.6
+    container_name: jukkirek-mongodb-config
+    command: mongod --configsvr --dbpath /data/db --replSet csvr
